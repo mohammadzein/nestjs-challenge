@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { parse } from 'querystring';
 let data = require('../../data/data.json');
-let fs = require('fs');
 var { DateTime } = require('luxon');
 
 @Injectable()
