@@ -12,34 +12,4 @@ describe('App.vue', () => {
 		expect(wrapper.vm.$data.selectedDay).toBe('');
 		expect(wrapper.vm.$data.speedAverage).toBe(0);
 	})
-
-	it('should filters the zones based on projects', () => {
-		const wrapper = shallowMount(App)
-		let zones: {
-			id: number,
-			name: string,
-			intersections: number[]
-		}[] = [
-            { 
-                "id": 1, 
-                "name": "DEFAULT",
-                "intersections": [1,2,3,4]
-            },
-            { 
-                "id": 2, 
-                "name": "DXB",
-                "intersections": [1]
-            },
-            { 
-                "id": 3, 
-                "name": "AD",
-                "intersections": [2]
-            },
-            { 
-                "id": 4, 
-                "name": "RAK",
-                "intersections": [2, 3]
-            }
-        ]
-	})
 })
