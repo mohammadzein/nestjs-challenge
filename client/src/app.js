@@ -52,12 +52,12 @@ export default {
             this.selectedDay = ''
         },
 
-        filterZones (zones) {
-            this.selectedZones = this.zones.filter(zone => zones.includes(zone.id))
+        filterZones (zones, filteredZones) {
+            return zones.filter(zone => filteredZones.includes(zone.id))
         },
 
-        filterIntersections (intersections) {
-            this.selectedIntersections = this.intersections.filter( intersection => intersections.includes(intersection.id))
+        filterIntersections (intersections, filteredIntersections) {
+            return intersections.filter(intersection => filteredIntersections.includes(intersection.id))
         },
 
         getFilteredViolations () {
@@ -96,7 +96,8 @@ export default {
                 return element.zones
             })
 
-            this.filterZones(
+            this.selectedZones = this.filterZones(
+                this.zones,
                 Array.from(
                     new Set(
                         zones.flat()
@@ -109,8 +110,9 @@ export default {
             let intersections = newVal.map(function (element) {
                 return element.intersections
             })
-
-            this.filterIntersections(
+            
+            this.selectedIntersections = this.filterIntersections(
+                this.intersections,
                 Array.from(
                     new Set(
                         intersections.flat()
