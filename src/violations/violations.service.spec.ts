@@ -18,12 +18,12 @@ describe('ViolationsService', () => {
 
   describe('parseDate', () => {
     it('should parse date time string to DateTime object', () => {
-        let dateTimeString = "2020-01-11 00:09:00";
+      let dateTimeString = "2020-01-11 00:09:00";
     
-        let dateTimeObject = service.parseDate(dateTimeString);
+      let dateTimeObject = service.parseDate(dateTimeString);
     
-        expect(typeof dateTimeObject === 'object').toBe(true)
-      })
+      expect(typeof dateTimeObject === 'object').toBe(true)
+    })
 
     it('timestamp of the datetime 2020-01-11 00:09:00 should be equal to 1578694140000', () => {
       let dateTimeString = "2020-01-11 00:09:00";
@@ -55,6 +55,16 @@ describe('ViolationsService', () => {
       let dateTimeObject = service.parseDate(dateTimeString);
   
       expect(dateTimeObject.weekdayLong).toBe('Saturday')
+    })
+  })
+
+  describe('fixDateTime', () => {
+    it('should add one day to the datetime since they starts from zero', () => {
+      let dateTimeString = "2020-01-0 00:09:00";
+  
+      let fixedDateTime = service.fixDateTime(dateTimeString);
+  
+      expect(fixedDateTime).toBe('2020-01-1 00:09:00')
     })
   })  
 });
