@@ -3,7 +3,7 @@ import { ViolationsController } from './violations.controller';
 import { ViolationsService } from './violations.service';
 
 @Module({
-  controllers: [ViolationsController],
-  providers: [ViolationsService]
+	controllers: [ViolationsController],
+	providers: [ViolationsService]
 })
 export class ViolationsModule {}

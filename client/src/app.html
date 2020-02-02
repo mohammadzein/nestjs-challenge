@@ -1,0 +1,106 @@
+<div id="app">
+    <div class="container" v-if="mounted">
+      <div class="d-flex flex-wrap justify-content-between">
+        <div class="card border-dark mt-3" style="min-width: 475px">
+          <div class="card-body">
+            <h5 class="font-weight-bold text-left">Filters Panel</h5>
+            <div class="d-flex justify-content-between mt-5">
+              <label for="from">From:</label>
+              <datetime 
+                v-model="from" 
+                format="yyyy-MM-dd HH:mm"
+                type='datetime'
+                input-id='from'>
+              </datetime>
+              <label for="to">To:</label>
+              <datetime 
+                v-model="to" 
+                type='datetime'
+                input-id='to'>
+              </datetime>
+            </div>
+            <div class="d-flex mt-4">
+              <multiselect 
+                v-model="selectedProjects" 
+                :options="projects"
+                label='name' 
+                :multiple="true" 
+                :close-on-select="false" 
+                :clear-on-select="false" 
+                :preserve-search="true" 
+                placeholder="Select Project/Projects" 
+                track-by="id">
+              </multiselect>
+            </div>
+            <div class="d-flex mt-4">
+              <multiselect 
+                v-model="selectedZones" 
+                :options="zones"
+                label='name' 
+                :multiple="true" 
+                :close-on-select="false" 
+                :clear-on-select="false" 
+                :preserve-search="true" 
+                placeholder="Select Zone/Zones" 
+                track-by="id">
+              </multiselect>
+            </div>
+            <div class="d-flex mt-4">
+              <multiselect 
+                v-model="selectedIntersections" 
+                :options="intersections"
+                label='name' 
+                :multiple="true" 
+                :close-on-select="false" 
+                :clear-on-select="false" 
+                :preserve-search="true" 
+                placeholder="Select Intersection/Intersections" 
+                track-by="id">
+              </multiselect>
+            </div>
+            <div class="d-flex mt-5">
+              <button @click="resetFilters" type="button" class="btn btn-warning">Reset Filters</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-dark mt-3" style="min-width: 475px">
+          <div class="card-body">
+            <h5 class="font-weight-bold text-left">Violation List</h5>
+              <div class="table-wrapper">
+                <table class="table table-bordered mt-5">
+                  <thead>
+                    <tr>
+                      <th scope="col">Id</th>
+                      <th scope="col">Violation Time</th>
+                      <th scope="col">Violation Speed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="violation in violations" :key="violation.id">
+                      <th scope="row">{{ violation.id }}</th>
+                      <td>{{ violation.time }}</td>
+                      <td>{{ violation.speed }}</td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+              <p class="font-weight-bold text-left">Total Violations {{ violations.length }}</p>
+              <div class="d-flex mt-4">
+                <multiselect 
+                  v-model="selectedDay" 
+                  :options="days"
+                  :close-on-select="false" 
+                  :clear-on-select="false" 
+                  :preserve-search="true" 
+                  placeholder="Select Day">
+                </multiselect>
+                <p>Average Speed {{speedAverage}} Km/H</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
