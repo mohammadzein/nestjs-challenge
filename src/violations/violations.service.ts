@@ -11,7 +11,7 @@ export class ViolationsService {
             projects: projects.projects,
             zones: zones.zones,
             intersections: intersections.intersections,
-            violations: violations.violations,
+            violations: this.parseViolations(violations.violations),
             days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         }
         return new Promise(resolve => {
@@ -24,15 +24,21 @@ export class ViolationsService {
         toTimestamp: number, 
         intersections: number[]
     }): Promise<any>{
-        let violations = this.getViolations()
-        let filteredViolations = this.filterViolations(violations, filters)
+        let [,,, violations] = data
+        let parsedViolations = this.parseViolations(violations.violations)
+        let filteredViolations = this.filterViolations(parsedViolations, filters)
         
         return new Promise(resolve => {
             resolve( filteredViolations );
         });
     }
 
-    getViolations (): { 
+    parseViolations (violations: {
+        id: number,
+        speed: number,
+        time: string,
+        intersection: number
+    }[]): { 
         id: number,
         time: string,
         speed: number,
@@ -40,9 +46,7 @@ export class ViolationsService {
         key: number,
         day: string,
     }[] {
-        let [,,, violations] = data
-        violations = violations.violations
-        
+
         let parsedViolations = []
         for (let index = 0; index < violations.length; index++) {
             const violation = violations[index]

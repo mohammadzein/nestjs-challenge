@@ -66,5 +66,68 @@ describe('ViolationsService', () => {
 
 			expect(fixedDateTime).toBe('2020-01-1 00:09:00')
 		})
-	})  
+	})
+	
+	describe('filterViolations', () => {
+		it('should filter the violations by number range and by intersection', () => {
+			let violations: {key: number, intersection: number }[] = [
+				{
+					key: 100,
+					intersection: 1
+				},
+				{
+					key: 200,
+					intersection: 2
+				},
+				{
+					key: 300,
+					intersection: 3
+				},
+			]
+
+			let filters: { 
+				fromTimestamp: number,
+				toTimestamp: number,
+				intersections: number[]
+			} = {
+				fromTimestamp: 100,
+				toTimestamp: 200,
+				intersections: [1],
+			}
+
+			let filteredViolations = service.filterViolations(violations, filters)
+
+			expect(filteredViolations.length).toEqual(1)
+		});
+	})
+
+	describe('parseViolations', () => {
+
+		it('should parse the violations and add a day for each violation', () => {
+			let violations: {
+				id: number,
+				speed: number,
+				time: string,
+				intersection: number
+			}[] = [
+				{
+					id: 1,
+					speed: 10,
+					time: '2020-01-11 00:09:00',
+					intersection: 1
+				}
+			]
+			
+			let parsedViolations = service.parseViolations(violations)
+
+			expect(parsedViolations).toEqual([{
+				id: 1,
+				speed: 10,
+				time: '2020-01-12 00:09:00',
+				intersection: 1,
+				key: 1578780540000,
+				day: 'Sunday'
+			}])
+		});
+	})
 });
