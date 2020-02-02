@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { parse } from 'querystring';
 let data = require('../../data/data.json');
 let fs = require('fs');
 var { DateTime } = require('luxon');
@@ -24,16 +25,22 @@ export class ViolationsService {
         toTimestamp: number, 
         intersections: number[]
     }): Promise<any>{
+        let violations = this.getViolations()
+        let filteredViolations = this.filterViolations(violations, filters)
+        
         return new Promise(resolve => {
-            resolve( this.getViolations(filters) );
+            resolve( filteredViolations );
         });
     }
 
-    getViolations (filters: {
-        fromTimestamp: number, 
-        toTimestamp: number, 
-        intersections: number[]
-    }): Array<object> {
+    getViolations (): { 
+        id: number,
+        time: string,
+        speed: number,
+        intersection: number,
+        key: number,
+        day: string,
+    }[] {
         let [,,, violations] = data
         violations = violations.violations
         
@@ -57,19 +64,28 @@ export class ViolationsService {
 
         }
 
+        return parsedViolations
+    }
+
+    filterViolations (violations: { key: number, intersection: number }[],
+        filters: {
+            fromTimestamp: number, 
+            toTimestamp: number, 
+            intersections: number[]
+    }) {
         if (filters.intersections.length) {
-            parsedViolations = parsedViolations.filter(violation => filters.intersections.includes(violation.intersection))
+            violations = violations.filter(violation => filters.intersections.includes(violation.intersection))
         }
 
         if (filters.fromTimestamp) {
-            parsedViolations = parsedViolations.filter(violation => filters.fromTimestamp <= violation.key)
+            violations = violations.filter(violation => filters.fromTimestamp <= violation.key)
         }
 
         if (filters.toTimestamp) {
-            parsedViolations = parsedViolations.filter(violation => filters.toTimestamp >= violation.key)
+            violations = violations.filter(violation => filters.toTimestamp >= violation.key)
         }
 
-        return parsedViolations
+        return violations
     }
 
     parseDate (date: string): {invalid: object | null, ts: number, weekdayLong: string} {
