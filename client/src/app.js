@@ -31,6 +31,7 @@ export default {
     },
 
     methods: {
+        // get initial data from the server and mount the app
         init () {
             axios.get('/api/violations').then(response => {
                 let { projects, zones, intersections, violations, days } = response.data
@@ -51,15 +52,15 @@ export default {
             this.selectedIntersections = [],
             this.selectedDay = ''
         },
-
+        // get filtered zones based on some zones ids
         filterZones (zones, filteredZones) {
             return zones.filter(zone => filteredZones.includes(zone.id))
         },
-
+        // get filtered intersections based on some intersecions ids
         filterIntersections (intersections, filteredIntersections) {
             return intersections.filter(intersection => filteredIntersections.includes(intersection.id))
         },
-
+        // get filtered violations from the server
         getFilteredViolations () {
             let fromTimestamp = ''
             let toTimestamp = ''
@@ -83,6 +84,19 @@ export default {
                 this.violations = response.data
                 this.mounted = true;
             })
+        },
+
+        getAverage (sum, count) {
+            let average = 0
+            if (count > 0) {
+                average = (sum / count).toFixed(2)
+            }
+
+            return average
+        },
+        // filter violations per day
+        getViolationsPerDay (violations, day) {
+            return violations.filter(violation => violation.day == day)
         }
     },
 
@@ -91,6 +105,7 @@ export default {
     },
 
     watch: {
+        // filter zones when selected Prjects value changes
         selectedProjects (newVal) {
             let zones = newVal.map(function (element) {
                 return element.zones
@@ -105,12 +120,12 @@ export default {
                 )
             )
         },
-
+        // filter intersections when selected zones changes 
         selectedZones (newVal) {
             let intersections = newVal.map(function (element) {
                 return element.intersections
             })
-            
+
             this.selectedIntersections = this.filterIntersections(
                 this.intersections,
                 Array.from(
@@ -120,34 +135,30 @@ export default {
                 )
             )
         },
-
+        // get the violations when selected intersections changes
         selectedIntersections (newVal) {
             this.getFilteredViolations(this.from, this.to, newVal);
         },
-
+        // get the violations when from value changes
         from () {
             this.getFilteredViolations()
         },
-
+        // get the violations when to value changes
         to () {
             this.getFilteredViolations()
         },
-
+        // get violations average when selected day value changes
         selectedDay (newVal) {
-            let violations = this.violations.filter(violation => violation.day == newVal)
+            let violations = this.getViolationsPerDay(this.violations, newVal)
 
             let sum = 0
             for (let index = 0; index < violations.length; index++) {
                 sum += violations[index].speed
             }
 
-            if (violations.length > 0) {
-                this.speedAverage =  (sum / violations.length).toFixed(2)
-            } else {
-                this.speedAverage = 0
-            }
+            this.speedAverage = this.getAverage(sum, violations.length)
         },
-
+        //reset selected day when the violations value changes
         violations () {
             this.selectedDay = ''
         }
